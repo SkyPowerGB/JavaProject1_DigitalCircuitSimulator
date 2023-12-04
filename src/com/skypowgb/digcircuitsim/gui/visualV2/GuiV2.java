@@ -1,9 +1,8 @@
 package com.skypowgb.digcircuitsim.gui.visualV2;
 
-import com.skypowgb.digcircuitsim.gui.TextureHelper;
+import com.skypowgb.digcircuitsim.logic.helpers.TextureHelper;
 import com.skypowgb.digcircuitsim.gui.ToolButtons;
 import com.skypowgb.digcircuitsim.logic.GuiAEManager;
-import com.skypowgb.digcircuitsim.logic.data.ActiveToolsV2;
 import com.skypowgb.digcircuitsim.logic.events.NewComponentActionListener;
 import com.skypowgb.digcircuitsim.logic.events.ToolBtnActionLister;
 import com.skypowgb.digcircuitsim.logic.setup.ToolsE;
@@ -27,7 +26,8 @@ public class GuiV2 {
     private static final int SIDE_BAR_WIDTH=100;
     private static final int UPPER_PANEL_HEIGHT=100;
 
-
+    private static final int COMP_CTRL_BTN_H=25;
+public static final Dimension COMP_CONTROL_BTN_DIM=new Dimension(COMP_CTRL_BTN_H,COMP_CTRL_BTN_H);
     private static final int NEW_COMPONENT_BTN_HEIGHT=50;
     //----------------------------------------------------------------------------------------------------
     //***************************************************************************************************
@@ -78,7 +78,7 @@ ToolButtons.toolButtons.add(toolBtn);
             toolBtn.setPreferredSize(CONTROL_BTN_DIM);
             toolBtn.setName(e.toString());
             toolBtn.addActionListener(toolSelector);
-
+toolBtn.setBackground(Color.gray);
             toolBtn.setIcon(TextureHelper.getControlBtnIcon(e,CONTROL_BTN_DIM.width,CONTROL_BTN_DIM.height));
             toolPanel.add(toolBtn);
 
@@ -105,6 +105,8 @@ palette.setLayout(new BoxLayout(palette,BoxLayout.Y_AXIS));
        newComponentBtn.setIcon(TextureHelper.getNewCompBtnIcon(name,SIDE_BAR_WIDTH,NEW_COMPONENT_BTN_HEIGHT));
        newComponentBtn.setName(name.toString());
        newComponentBtn.addActionListener(newComp);
+
+       newComponentBtn.setBackground(Color.gray);
         palette.add(newComponentBtn);
     }
 

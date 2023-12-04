@@ -3,5 +3,5 @@ package com.skypowgb.digcircuitsim.model.setup;
 //namesm must be same as classNames
 
 public enum ComponentClassNamesE {
-    AndGate,Joint,OrGate,Vcc,Gnd,NotGate,Probe
+    AndGate,Joint,OrGate,Vcc,Gnd,NotGate,Probe,Switch2Pin
 }

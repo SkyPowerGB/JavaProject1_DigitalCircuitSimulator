@@ -1,5 +1,6 @@
-package com.skypowgb.digcircuitsim.gui;
+package com.skypowgb.digcircuitsim.logic.helpers;
 
+import com.skypowgb.digcircuitsim.gui.visualV2.GuiV2;
 import com.skypowgb.digcircuitsim.logic.data.ActiveToolsV2;
 import com.skypowgb.digcircuitsim.logic.setup.ToolsE;
 import com.skypowgb.digcircuitsim.model.setup.ComponentClassNamesE;
@@ -13,6 +14,8 @@ public class TextureHelper {
     public static final String COMPONENT_BTN_PATH="./././Files/Textures/ComponentButtons/";
     public static final String CONTROL_BTN_PATH="./././Files/Textures/ControlButtons/";
     public static final String COMPONENT_PATH="./././Files/Textures/Components/";
+
+    public static final String PIN_PATH="./././Files/Textures/Random/pin.png";
 
 
 public static ImageIcon getNewCompBtnIcon(ComponentClassNamesE className){
@@ -60,7 +63,7 @@ public static ImageIcon getControlBtnIcon(ToolsE toole, int width, int height){
 
 
     String fullpath=CONTROL_BTN_PATH+name+state+".png";
-System.out.println(fullpath);
+
     ImageIcon icon=new ImageIcon(fullpath);
 
     return getScaledFast(icon,width,height);
@@ -72,7 +75,13 @@ public static ImageIcon getComponentTexture(ComponentClassNamesE component,int w
 
 }
 public static ImageIcon getComponentTexture(ComponentClassNamesE component,String suffix,int width,int height) {
-    ImageIcon icon = new ImageIcon(COMPONENT_PATH + component + suffix + ".png");
+    ImageIcon icon;
+
+    if(suffix.equals("")){
+     icon=  getComponentTexture(component,width,height);
+       return getScaledFast(icon,width,height);
+   }
+    icon = new ImageIcon(COMPONENT_PATH + component + suffix + ".png");
     return getScaledFast(icon, width, height);
 
 }
@@ -83,7 +92,10 @@ public static ImageIcon getComponentIcon(String component){
 }
 
 
-
+public static ImageIcon getPinTexture(){
+    ImageIcon icon=new ImageIcon(PIN_PATH);
+    return getScaledFast(icon, GuiV2.PIN_SIZE,GuiV2.PIN_SIZE);
+}
 
 
 

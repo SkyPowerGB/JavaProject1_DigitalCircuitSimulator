@@ -6,10 +6,16 @@ import com.skypowgb.digcircuitsim.model.enums.CommonPinNames;
 import com.skypowgb.digcircuitsim.model.enums.PinType;
 
 public class Probe extends DigitalComponent {
-    public Probe(){this.addPin(new Pin(CommonPinNames.in, PinType.INPUT,0,false));}
+    public Probe() {
+        this.addPin(new Pin(CommonPinNames.in, PinType.INPUT, 0, false));
+    }
 
     @Override
     protected void updateOutputs() {
-
+if(getPinByName(CommonPinNames.in).getPinState()){
+    setCompTextureSuffix("ON");
+}else{
+    setCompTextureSuffix("");
+}
     }
 }

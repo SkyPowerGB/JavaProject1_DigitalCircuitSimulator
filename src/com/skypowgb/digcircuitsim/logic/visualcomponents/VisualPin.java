@@ -8,7 +8,7 @@ public class VisualPin extends JButton {
 private VisualDigitalComponent comp;
 private Pin pin;
     public  VisualPin(VisualDigitalComponent comp,Pin pin){
-
+this.comp=comp;
 this.pin=pin;
     }
 

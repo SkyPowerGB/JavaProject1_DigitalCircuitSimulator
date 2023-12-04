@@ -1,30 +1,31 @@
 package com.skypowgb.digcircuitsim.logic;
 
-import com.skypowgb.digcircuitsim.gui.TextureHelper;
+import com.skypowgb.digcircuitsim.logic.events.*;
+import com.skypowgb.digcircuitsim.logic.helpers.TextureHelper;
 import com.skypowgb.digcircuitsim.gui.ToolButtons;
 import com.skypowgb.digcircuitsim.gui.visualV2.GuiV2;
 import com.skypowgb.digcircuitsim.logic.data.ActiveToolsV2;
 import com.skypowgb.digcircuitsim.logic.data.Storage;
-import com.skypowgb.digcircuitsim.logic.events.ComponentMouseListener;
-import com.skypowgb.digcircuitsim.logic.events.FrameKeyListener;
-import com.skypowgb.digcircuitsim.logic.events.PinActionListener;
-import com.skypowgb.digcircuitsim.logic.events.WorkspaceMouseListener;
 import com.skypowgb.digcircuitsim.logic.helpers.DigitalComponentFactory;
+import com.skypowgb.digcircuitsim.logic.helpers.PinButtonLocationHelper;
 import com.skypowgb.digcircuitsim.logic.setup.ToolsE;
+import com.skypowgb.digcircuitsim.logic.visualcomponents.VisualCompCtrlBtn;
 import com.skypowgb.digcircuitsim.logic.visualcomponents.VisualDigitalComponent;
 import com.skypowgb.digcircuitsim.logic.visualcomponents.VisualPin;
 import com.skypowgb.digcircuitsim.model.DigitalComponent;
 import com.skypowgb.digcircuitsim.model.Pin;
-import com.skypowgb.digcircuitsim.model.Whire;
+import com.skypowgb.digcircuitsim.model.components.Switch2Pin;
 import com.skypowgb.digcircuitsim.model.setup.ComponentClassNamesE;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileReader;
 
 public class GuiAEManager {
 private static    JFrame window;
 private static     JPanel workspace;
 
+private static SpecialControlBtnListener specialControlBtnListener;
 private static ComponentMouseListener componentMouseListener;
 private static FrameKeyListener frameKeyListener;
 private static PinActionListener pinListener;
@@ -53,6 +54,9 @@ private static boolean isAllSet=false;
 
         componentMouseListener=new ComponentMouseListener();
 
+        //-----------
+        specialControlBtnListener=new SpecialControlBtnListener();
+
     }
 
     public static void removeAllListeners(){
@@ -68,6 +72,7 @@ window.removeKeyListener(frameKeyListener);
 
     public static void prepareComponent(ComponentClassNamesE name){
 if(!isAllSet){return;}
+
 makingComponent=true;
 if(ActiveToolsV2.getToolState(ToolsE.newComp)){return;}
 updateToolTextures();
@@ -80,8 +85,10 @@ ActiveToolsV2.setToolState(ToolsE.newComp,true);
 
 componentTemp.setBackground(null);
 componentTemp.setOpaque(false);
-
+        updateToolTextures();
+refreshFrame();
 addComponentPins();
+addComponentControlBtn();
 
 }
 
@@ -99,17 +106,20 @@ componentTemp.addMouseListener(componentMouseListener);
 
 componentTemp=null;
         ActiveToolsV2.setToolState(ToolsE.newComp,false);
+        updateToolTextures();
 refreshFrame();
 }
 
 
 
     public static void deleteComponent(VisualDigitalComponent component){
+        Storage.deleteComp(component);
 removeComponentPins(component);
 
 component.removeMouseListener(componentMouseListener);
 workspace.remove(component);
 Storage.visualDigitalComponents.remove(component);
+
 refreshFrame();
 }
 
@@ -129,18 +139,46 @@ refreshFrame();
         visualPin.setVisible(false);
         visualPin.addActionListener(pinListener);
       visualPin.setSize(GuiV2.PIN_SIZE,GuiV2.PIN_SIZE);
+visualPin.setIcon(TextureHelper.getPinTexture());
+visualPin.setOpaque(false);
+visualPin.setBorderPainted(false);
+visualPin.setContentAreaFilled(false);
+visualPin.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+      ComponentClassNamesE nameOf= ComponentClassNamesE.valueOf(componentTemp.getDigComponent().getClass().getSimpleName());
+        PinButtonLocationHelper.setup();
+if(PinButtonLocationHelper.isPinLocationSaved(nameOf,i)){
 
+    visualPin.setLocation(PinButtonLocationHelper.getPinLocation(nameOf,i));
+    i++;
+}else{
         if(visualPin.getPin().isInput()){
             visualPin.setLocation(0,i);
+            i++;
         }else{
             visualPin.setLocation(componentTemp.getWidth()-GuiV2.PIN_SIZE,i);
+            i+=GuiV2.PIN_CLR+GuiV2.PIN_SIZE;
         }
+}
+
         componentTemp.add(visualPin);
         componentTemp.addPinButton(visualPin);
-        i+=GuiV2.PIN_CLR+GuiV2.PIN_SIZE;
+
     }
 
 }
+
+    private static void addComponentControlBtn(){
+            if(!componentTemp.getDigComponent().isSpecial()){return;}
+        VisualCompCtrlBtn compControlBtn=new VisualCompCtrlBtn(componentTemp.getDigComponent().getClassNameE(),componentTemp);
+compControlBtn.setSize(GuiV2.COMP_CONTROL_BTN_DIM);
+compControlBtn.addActionListener(specialControlBtnListener);
+compControlBtn.setLocation((componentTemp.getWidth()/2)-GuiV2.COMP_CONTROL_BTN_DIM.width,
+        (componentTemp.getHeight()/2)-GuiV2.COMP_CONTROL_BTN_DIM.height      );
+
+            componentTemp.add(compControlBtn);
+            refreshFrame();
+    }
+
     private static void removeComponentPins(VisualDigitalComponent target){
     for (VisualPin pin:target.getPinButtons()) {
         pin.removeActionListener(pinListener);
@@ -166,7 +204,7 @@ public static void SetComponentPinsInvisible(){
     }
 }
 
-    private static void refreshFrame(){
+    public static void refreshFrame(){
         if(!isAllSet){return;}
         window.repaint();
         window.setVisible(true);
@@ -193,5 +231,22 @@ System.out.println("simulation running" );
 
     worker.execute();
 }
+
+
+public static void specialComponentActivate(ComponentClassNamesE comp,VisualDigitalComponent component){
+        if(comp== ComponentClassNamesE.Switch2Pin){
+System.out.println("switchstate");
+        Switch2Pin switchComp= (Switch2Pin) component.getDigComponent();
+switchComp.switchState();
+component.updateImage();
+
+        } else if (false){
+
+
+        }
+        refreshFrame();
+
+}
+
 
 }

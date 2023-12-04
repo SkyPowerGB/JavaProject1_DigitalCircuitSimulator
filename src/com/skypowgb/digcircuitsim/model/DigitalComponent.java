@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 public class DigitalComponent {
 
-
+    private boolean special=false;
 
     private ArrayList<Pin> pins=new ArrayList<Pin>();
 
+    private String compTextureSuffix="";
     private int maxPinNum=0;
 
 
@@ -109,8 +110,13 @@ return numbers;
       return false;
     }
 
+    public String getCompTextureSuffix() {
+        return compTextureSuffix;
+    }
 
-
+    public void setCompTextureSuffix(String compTextureSuffix) {
+        this.compTextureSuffix = compTextureSuffix;
+    }
 
 
 //-------------------------------------------------------------------------------
@@ -174,5 +180,13 @@ updateOutputs();
 // private methods------------------------------
 
 
+//public----------------------------------------
 
+    public boolean isSpecial() {
+        return special;
+    }
+
+    public void setSpecial(boolean special) {
+        this.special = special;
+    }
 }
