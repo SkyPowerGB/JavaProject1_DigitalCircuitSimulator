@@ -1,5 +1,6 @@
 package com.skypowgb.digcircuitsim.gui.visualV2;
 
+import com.skypowgb.digcircuitsim.gui.parts.Workspace;
 import com.skypowgb.digcircuitsim.logic.helpers.TextureHelper;
 import com.skypowgb.digcircuitsim.gui.ToolButtons;
 import com.skypowgb.digcircuitsim.logic.GuiAEManager;
@@ -48,7 +49,7 @@ public static final Dimension COMP_CONTROL_BTN_DIM=new Dimension(COMP_CTRL_BTN_H
         window.setLayout(new BorderLayout());
         SIDEMENU_DIM=new Dimension(SIDE_BAR_WIDTH,window.getHeight()-UPPER_PANEL_HEIGHT);
 
-        JPanel workspace = new JPanel();
+        Workspace workspace = new Workspace();
 workspace.setLayout(null);
 
         GuiAEManager guiManager=new GuiAEManager(window,workspace);
